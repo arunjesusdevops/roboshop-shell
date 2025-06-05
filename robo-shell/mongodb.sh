@@ -1,10 +1,10 @@
 #!/bin/bash
 
 ID=$(id -u)
-R= "\e[31m"
-G= "\e[32m"
-Y= "\e[33m"
-N= "\e[0m"
+R="\e[31m"
+G="\e[32m"
+Y="\e[33m"
+N="\e[0m"
 
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
@@ -38,8 +38,8 @@ VALIDATE $? "Starting MongoDB"
 
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf &>> $LOGFILE
 
-VALIDATE $? "Remote access to MongoDB"
+VALIDATE $? "Remote access to MongoDB" &>> $LOGFILE
 
 systemctl restart mongod
 
-VALIDATE $? "Restarting MongoDB"
+VALIDATE $? "Restarting MongoDB" &>> $LOGFILE
