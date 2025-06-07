@@ -5,6 +5,7 @@ R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
+MONGDB_HOST=mongodb.arunjesusdevops.site
 
 TIMESTAMP=$(date +%F-%H-%M-%S)
 LOGFILE="/tmp/$0-$TIMESTAMP.log"
@@ -54,10 +55,30 @@ npm install
 
 VALIDATE $? "Installing Dependencies" &>> $LOGFILE
 
+cp /root/roboshop-shell/robo-shell/catalogue.service /etc/systemd/system/catalogue.service
 
-
+VALIDATE$? "Copying the catalogue service file"
 
 systemctl daemon-reload
 
+VALIDATE $? "catalogue daemon reload"
+
 systemctl enable catalogue 
+
+VALIDATE $? "enable catalogue"
+
 systemctl start catalogue
+
+VALIDATE $? "start catalogue"
+
+cp /root/roboshop-shell/robo-shell/mongo.repo /etc/yum.repos.d/mongo.repo
+
+VALIDATE $? "Copying mongorepo"
+
+dnf install mongodb-mongosh -y
+
+VALIDATE $? "Installing mongo client"
+
+mongosh --host $MONGDB_HOST </app/db/master-data.js
+
+VALIDATE $? "Loading catlogue date into MongoDB"

@@ -44,4 +44,3 @@ systemctl restart mongod &>> $LOGFILE
 
 VALIDATE $? "Restarting MongoDB"
 
-cp Catalogue.Service /etc/systemd/system/catalogue.service
