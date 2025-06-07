@@ -20,33 +20,19 @@ VALIDATE(){
    fi
 }
 
-dnf module disable nodejs -y &>> $LOGFILE
+cp mongo.repo /etc/yum.repos.d/mongo.repo &>> $LOGFILE
 
-VALIDATE $? "Disabling current NodeJS" &>> $LOGFILE
+VALIDATE $? "Copied MongoDB repo"
 
-dnf module enable nodejs:20 -y
+dnf install mongodb-org -y &>> $LOGFILE
+
+VALIDATE $? "Installing MongoDB"
+
+systemctl enable mongod
 
 VALIDATE $? "Enabling MongoDB"
 
-dnf install nodejs -y
-
-useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-
-mkdir /app 
-
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
-cd /app 
-unzip /tmp/catalogue.zip
-
-cd /app 
-npm install 
-
-systemctl daemon-reload
-
-
-systemctl enable catalogue 
-systemctl start catalogue
-
+systemctl start mongod 
 
 VALIDATE $? "Starting MongoDB"
 
@@ -57,3 +43,5 @@ VALIDATE $? "Remote access to MongoDB"
 systemctl restart mongod &>> $LOGFILE
 
 VALIDATE $? "Restarting MongoDB"
+
+cp Catalogue.Service /etc/systemd/system/catalogue.service
